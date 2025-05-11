@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplayer Truth or Dare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">Truth or Dare</a>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" id="home-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#" class="nav-link" id="room-link">
+                    <i class="fas fa-door-open"></i>
+                    <span>Room</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#" class="nav-link" id="join-link">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Join</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#" class="nav-link" id="refresh-link">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Refresh</span>
+                    <div class="nav-indicator"></div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Home Page -->
+        <section class="page active" id="home-page">
+            <div class="hero-section">
+                <h1>Multiplayer Truth or Dare</h1>
+                <p>Play with friends online in real-time with custom questions!</p>
+                <div class="mode-selection">
+                    <div class="mode-card" id="default-mode">
+                        <i class="fas fa-dice"></i>
+                        <h3>Default Mode</h3>
+                        <p>Use our pre-made questions for quick play</p>
+                    </div>
+                    <div class="mode-card" id="custom-mode">
+                        <i class="fas fa-edit"></i>
+                        <h3>Custom Mode</h3>
+                        <p>Create your own truth and dare questions</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Room Creation Page -->
+        <section class="page" id="room-page">
+            <div class="room-container">
+                <h2>Create a Game Room</h2>
+                <div class="form-group">
+                    <label for="room-name">Room Name</label>
+                    <input type="text" id="room-name" placeholder="Enter room name">
+                </div>
+                <div class="form-group">
+                    <label for="room-password">Password</label>
+                    <input type="password" id="room-password" placeholder="Create a password">
+                </div>
+                <button id="create-room-btn" class="btn-primary">Create Room</button>
+                <div class="room-info" id="room-info" style="display: none;">
+                    <h3>Room Created Successfully!</h3>
+                    <p>Share this password with your friends: <span id="display-password"></span></p>
+                    <div class="qr-code-container">
+                        <div id="qr-code"></div>
+                        <p>Scan to join quickly</p>
+                    </div>
+                    <div class="connected-players" id="connected-players">
+                        <h4>Connected Players:</h4>
+                        <ul id="players-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Join Room Page -->
+        <section class="page" id="join-page">
+            <div class="join-container">
+                <h2>Join a Game Room</h2>
+                <div class="form-group">
+                    <label for="join-password">Enter Room Password</label>
+                    <input type="password" id="join-password" placeholder="Enter password provided by host">
+                </div>
+                <div class="form-group">
+                    <label for="player-name">Your Name</label>
+                    <input type="text" id="player-name" placeholder="Enter your name">
+                </div>
+                <button id="join-room-btn" class="btn-primary">Join Room</button>
+                <div class="join-status" id="join-status"></div>
+            </div>
+        </section>
+
+        <!-- Custom Questions Page -->
+        <section class="page" id="custom-questions-page">
+            <div class="custom-container">
+                <h2>Create Custom Questions</h2>
+                <div class="questions-section">
+                    <div class="truth-section">
+                        <h3>Truth Questions</h3>
+                        <div class="question-input-group">
+                            <input type="text" class="truth-input" placeholder="Enter a truth question">
+                            <button class="add-question-btn" data-type="truth"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="questions-list" id="truth-questions-list"></div>
+                    </div>
+                    <div class="dare-section">
+                        <h3>Dare Challenges</h3>
+                        <div class="question-input-group">
+                            <input type="text" class="dare-input" placeholder="Enter a dare challenge">
+                            <button class="add-question-btn" data-type="dare"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="questions-list" id="dare-questions-list"></div>
+                    </div>
+                </div>
+                <button id="save-questions-btn" class="btn-primary">Save Questions & Continue</button>
+            </div>
+        </section>
+
+        <!-- Player Setup Page -->
+        <section class="page" id="player-setup-page">
+            <div class="setup-container">
+                <h2>Player Setup</h2>
+                <div class="players-input-container" id="players-input-container">
+                    <div class="player-input-group">
+                        <input type="text" class="player-input" placeholder="Player 1 Name">
+                        <button class="remove-player-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="player-input-group">
+                        <input type="text" class="player-input" placeholder="Player 2 Name">
+                        <button class="remove-player-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <button id="add-player-btn" class="btn-secondary"><i class="fas fa-user-plus"></i> Add Player</button>
+                <button id="start-game-btn" class="btn-primary">Start Game</button>
+            </div>
+        </section>
+
+        <!-- Game Page -->
+        <section class="page" id="game-page">
+            <div class="game-container">
+                <h2>Truth or Dare</h2>
+                <div class="wheels-container">
+                    <div class="wheel-container">
+                        <h3>Asker</h3>
+                        <div class="wheel" id="wheel1">
+                            <div class="wheel-arrow"></div>
+                            <div class="wheel-center"></div>
+                            <div class="wheel-sections"></div>
+                        </div>
+                    </div>
+                    <div class="wheel-container">
+                        <h3>Answerer</h3>
+                        <div class="wheel" id="wheel2">
+                            <div class="wheel-arrow"></div>
+                            <div class="wheel-center"></div>
+                            <div class="wheel-sections"></div>
+                        </div>
+                    </div>
+                </div>
+                <button id="spin-btn" class="btn-primary spin-btn">Spin</button>
+            </div>
+        </section>
+
+        <!-- Result Modal -->
+        <div class="modal" id="result-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2 id="result-title" class="centered-title"></h2>
+                <div class="result-options">
+                    <button id="truth-btn" class="btn-option btn-truth">Truth</button>
+                    <button id="dare-btn" class="btn-option btn-dare">Dare</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Modal -->
+        <div class="modal" id="question-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2 id="question-type">Truth</h2>
+                <p id="question-text">What is your biggest fear?</p>
+                <div class="question-actions">
+                    <button id="next-round-btn" class="btn-primary">Next Round</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connection Status Indicator -->
+        <div class="connection-status" id="connection-status"></div>
+
+        <!-- Fullscreen Button -->
+        <div class="fullscreen-container">
+            <button id="fullscreen-btn" class="fullscreen-btn">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
